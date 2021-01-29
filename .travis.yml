@@ -5,33 +5,32 @@ services:
   - docker
 
 before_install:
-  - docker build -t sterrell6/react-test -f ./client/Dockerfile.dev ./client
+  - docker build -t cygnetops/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true sterrell6/react-test npm test
+  - docker run -e CI=true cygnetops/react-test npm test
 
 after_success:
-  - docker build -t sterrell6/multi-client ./client
-  - docker build -t sterrell6/multi-nginx ./nginx
-  - docker build -t sterrell6/multi-server ./server
-  - docker build -t sterrell6/multi-worker ./worker
+  - docker build -t cygnetops/multi-client-10-14 ./client
+  - docker build -t cygnetops/multi-nginx-10-14 ./nginx
+  - docker build -t cygnetops/multi-server-10-14 ./server
+  - docker build -t cygnetops/multi-worker-10-14 ./worker
   # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   # Take those images and push them to docker hub
-  - docker push sterrell6/multi-client
-  - docker push sterrell6/multi-nginx
-  - docker push sterrell6/multi-server
-  - docker push sterrell6/multi-worker
+  - docker push cygnetops/multi-client-10-14
+  - docker push cygnetops/multi-nginx-10-14
+  - docker push cygnetops/multi-server-10-14
+  - docker push cygnetops/multi-worker-10-14
 
 deploy:
   provider: elasticbeanstalk
-  region: "us-west-1"
-  app: "multi-docker"
-  env: "MultiDocker-env"
-  bucket_name: "elasticbeanstalk-us-west-1-471351072095"
-  bucket_path: "docker-multi"
+  region: 'us-east-1'
+  app: 'multi-docker'
+  env: 'MultiDocker-env'
+  bucket_name: 'elasticbeanstalk-us-east-1-923445559289'
+  bucket_path: 'docker-multi'
   on:
-   branch: master
+    branch: master
   access_key_id: $AWS_ACCESS_KEY
   secret_access_key: $AWS_SECRET_KEY
-
